@@ -1,0 +1,19 @@
+[project]
+name = "billing-api"
+version = "0.3.2"
+description = "Internal billing and invoicing service"
+requires-python = ">=3.11"
+dependencies = [
+    "flask>=3.0",
+    "sqlalchemy>=2.0",
+    "stripe>=8.0",
+    "pyjwt>=2.8",
+    "requests>=2.31",
+    "lxml>=4.9",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-flask>=1.3",
+]
