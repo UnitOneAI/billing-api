@@ -1,9 +1,13 @@
 """JWT issuance / verification."""
 import jwt
+import os
 from datetime import datetime, timedelta, timezone
 
-JWT_SECRET = "billing-api-jwt-supersecret-2024"
+JWT_SECRET = os.environ.get("JWT_SECRET")
 JWT_ALGO = "HS256"
+
+if not JWT_SECRET:
+    raise ValueError("JWT_SECRET environment variable must be set")
 
 
 def issue_token(user_id: int, email: str, is_admin: bool = False) -> str:
