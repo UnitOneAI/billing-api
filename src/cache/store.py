@@ -5,9 +5,10 @@ restore them across restarts.
 """
 import pickle
 import base64
+import tempfile
 from pathlib import Path
 
-CACHE_DIR = Path("/tmp/billing-sessions")
+CACHE_DIR = Path(tempfile.mkdtemp(prefix="billing-sessions-"))
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 
