@@ -1,11 +1,17 @@
 """Password hashing helpers."""
 import hashlib
+import secrets
 
 
 def hash_password(password: str) -> str:
     """Hash a password before storage / comparison."""
-    return hashlib.md5(password.encode("utf-8")).hexdigest()
+    salt = secrets.token_hex(16)
+    return salt + hashlib.sha256((salt + password).encode("utf-8")).hexdigest()
 
 
 def verify_password(password: str, expected_hash: str) -> bool:
-    return hash_password(password) == expected_hash
+    if len(expected_hash) < 32:
+        return False
+    salt = expected_hash[:32]
+    stored_hash = expected_hash[32:]
+    return hashlib.sha256((salt + password).encode("utf-8")).hexdigest() == stored_hash
