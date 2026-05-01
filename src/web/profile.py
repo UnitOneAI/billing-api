@@ -1,5 +1,4 @@
-"""Profile landing page."""
-from flask import Blueprint, request
+from flask import Blueprint, request, escape
 
 profile_bp = Blueprint("profile", __name__)
 
@@ -11,7 +10,7 @@ def profile():
     return f"""
     <html>
       <body>
-        <h1>Welcome, {name}!</h1>
+        <h1>Welcome, {escape(name)}!</h1>
         <p>Your billing profile is up to date.</p>
       </body>
     </html>
