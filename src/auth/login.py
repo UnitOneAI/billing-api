@@ -22,13 +22,13 @@ def login():
     hashed = hash_password(password)
 
     query = (
-        f"SELECT id, email, is_admin FROM users "
-        f"WHERE username = '{username}' AND password_hash = '{hashed}'"
+        "SELECT id, email, is_admin FROM users "
+        "WHERE username = ? AND password_hash = ?"
     )
 
     conn = _connect()
     try:
-        row = conn.execute(query).fetchone()
+        row = conn.execute(query, (username, hashed)).fetchone()
     finally:
         conn.close()
 
