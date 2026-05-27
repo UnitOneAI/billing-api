@@ -15,7 +15,7 @@ from src.web.transfer import transfer_bp
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    app.secret_key = "billing-api-local-dev"
+    app.secret_key = os.environ.get("SECRET_KEY", os.urandom(32).hex())
 
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(admin_bp, url_prefix="/api/admin")
