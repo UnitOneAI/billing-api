@@ -14,12 +14,16 @@ def update_user(user_id: int):
     """Update a user's profile."""
     body = request.json or {}
 
-    set_clause = ", ".join(f"{k} = ?" for k in body.keys() if k in USER_COLUMNS)
-    values = [body[k] for k in body.keys() if k in USER_COLUMNS]
-    values.append(user_id)
-
-    if not set_clause:
+    # Filter keys to only allowed columns
+    allowed_keys = [k for k in body.keys() if k in USER_COLUMNS]
+    
+    if not allowed_keys:
         return jsonify({"error": "no valid fields"}), 400
+    
+    # Build SET clause using only validated column names
+    set_clause = ", ".join(f"{k} = ?" for k in allowed_keys)
+    values = [body[k] for k in allowed_keys]
+    values.append(user_id)
 
     conn = sqlite3.connect(DB_PATH)
     try:
@@ -27,4 +31,4 @@ def update_user(user_id: int):
         conn.commit()
     finally:
         conn.close()
-    return jsonify({"updated": user_id, "fields": list(body.keys())})
+    return jsonify({"updated": user_id, "fields": allowed_keys})
