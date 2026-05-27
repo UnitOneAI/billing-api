@@ -1,8 +1,11 @@
 """JWT issuance / verification."""
 import jwt
+import os
 from datetime import datetime, timedelta, timezone
 
-JWT_SECRET = "billing-api-jwt-supersecret-2024"
+JWT_SECRET = os.environ.get("JWT_SECRET")
+if not JWT_SECRET:
+    raise ValueError("JWT_SECRET environment variable must be set")
 JWT_ALGO = "HS256"
 
 
