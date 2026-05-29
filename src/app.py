@@ -13,27 +13,15 @@ from src.web.redirect import redirect_bp
 from src.web.transfer import transfer_bp
 
 
-def create_app() -> Flask:
+def create_app(testing: bool = False) -> Flask:
     app = Flask(__name__)
-    app.secret_key = "billing-api-local-dev"
+    app.testing = testing
+    secret_key = os.environ.get("SECRET_KEY")
+    if not secret_key:
+        if testing:
+            secret_key = "testing-secret-key-not-for-production"
+        else:
+            raise RuntimeError("SECRET_KEY environment variable must be set")
+    app.secret_key = secret_key
 
     app.register_blueprint(auth_bp, url_prefix="/auth")
-    app.register_blueprint(admin_bp, url_prefix="/api/admin")
-    app.register_blueprint(users_bp, url_prefix="/api/users")
-    app.register_blueprint(invoices_bp, url_prefix="/api/invoices")
-    app.register_blueprint(download_bp, url_prefix="/api/files")
-    app.register_blueprint(webhook_bp, url_prefix="/webhooks")
-    app.register_blueprint(profile_bp, url_prefix="/profile")
-    app.register_blueprint(redirect_bp)
-    app.register_blueprint(transfer_bp, url_prefix="/transfer")
-
-    @app.get("/healthz")
-    def healthz():
-        return {"status": "ok", "version": "0.3.2"}
-
-    return app
-
-
-if __name__ == "__main__":
-    app = create_app()
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)), debug=True)
