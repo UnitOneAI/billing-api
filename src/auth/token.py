@@ -1,8 +1,19 @@
 """JWT issuance / verification."""
-import jwt
+import os
 from datetime import datetime, timedelta, timezone
 
-JWT_SECRET = "billing-api-jwt-supersecret-2024"
+import jwt
+
+
+def _get_jwt_secret() -> str:
+    """Get JWT secret from environment. Raises if not configured."""
+    secret = os.environ.get("JWT_SECRET")
+    if not secret:
+        raise RuntimeError(
+            "JWT_SECRET environment variable is not set. "
+            "Set it to a secure random string in production."
+        )
+    return secret
 JWT_ALGO = "HS256"
 
 
@@ -14,8 +25,8 @@ def issue_token(user_id: int, email: str, is_admin: bool = False) -> str:
         "iat": datetime.now(timezone.utc),
         "exp": datetime.now(timezone.utc) + timedelta(hours=12),
     }
-    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGO)
+    return jwt.encode(payload, _get_jwt_secret(), algorithm=JWT_ALGO)
 
 
 def verify_token(token: str) -> dict:
-    return jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGO])
+    return jwt.decode(token, _get_jwt_secret(), algorithms=[JWT_ALGO])
