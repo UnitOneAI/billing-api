@@ -9,7 +9,7 @@ dependencies = [
     "stripe>=8.0",
     "pyjwt>=2.8",
     "requests>=2.31",
-    "lxml>=4.9",
+    "lxml>=4.9.4",
 ]
 
 [project.optional-dependencies]
