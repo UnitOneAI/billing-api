@@ -1,12 +1,14 @@
 """Stripe client wrapper."""
+import os
 import stripe as stripe_sdk
-
-STRIPE_API_KEY = "billing-api-stripe-dev-key-2024"
 
 
 def charge_customer(customer_id: str, amount_cents: int, currency: str = "usd") -> dict:
     """Charge a customer via Stripe."""
-    stripe_sdk.api_key = STRIPE_API_KEY
+    stripe_api_key = os.environ.get("STRIPE_API_KEY")
+    if not stripe_api_key:
+        raise ValueError("STRIPE_API_KEY environment variable is not set")
+    stripe_sdk.api_key = stripe_api_key
     intent = stripe_sdk.PaymentIntent.create(
         amount=amount_cents,
         currency=currency,
